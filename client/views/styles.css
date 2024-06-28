@@ -1,0 +1,127 @@
+body {
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+}
+
+.default {
+}
+
+.header {
+  display: block;
+  font-size: 1.17em;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+}
+
+.label {
+  display: block;
+  margin: 3px 0px;
+  font-style: italic;
+}
+
+.message {
+  display: block;
+  margin: 3px 0px;
+}
+
+.snippet {
+  display: block;
+  margin: 3px 0px;
+  font-size: 11pt;
+  width: 500px;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.no-messages {
+  display: block;
+  margin: 3px 0px;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.red-text {
+  color: red;
+}
+
+.status-block {
+  padding-top: 10px;
+  text-align: right;
+}
+
+.green-status {
+  background-color: green;
+  color: white;
+
+  border: 5px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.yellow-status {
+  background-color: yellow;
+  color: black;
+
+  border: 5px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.red-status {
+  background-color: red;
+  color: white;
+
+  border: 5px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.blue-status {
+  background-color: blue;
+  color: white;
+
+  border: 5px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.code {
+  display: block;
+//  font-family: 'Monaco', monospace;
+  white-space: pre;
+  margin: 1em 0px;
+}
+
+.view-source {
+  padding: 3px 7px;
+}
+
+.view-source:visited {
+  color: #0000EE;
+}
+
+.literal {
+  font-family: 'Georgia', serif;
+  font-style: italic;
+}
+
+.indent {
+  margin-left: 1.5em;
+  margin-bottom: 0.1em;
+}
+
+.blue-link {
+  text-decoration: none;
+  color: #0000EE;
+}
+
+.blue-link:visited {
+  color: #0000EE;
+}

@@ -1,0 +1,11 @@
+{
+  "name": "cloud-demo",
+  "version": "1.0.0",
+  "description": "Experimenting with orthogonal replication.",
+  "main": "server/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Misha Dynin",
+  "license": "BSD-3-Clause"
+}
