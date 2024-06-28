@@ -9,7 +9,7 @@ SECRETS=data/secrets.json
 if ! test -f $SECRETS
 then
   # The file doesn't exist; create it.
-  SYNC_TOKEN=`head -c 42 /dev/urandom | base64`
+  SYNC_TOKEN=`head -c 30 /dev/urandom | base64`
   echo "{\"SYNC_TOKEN\": \"$SYNC_TOKEN\"}" > $SECRETS
 fi
 
