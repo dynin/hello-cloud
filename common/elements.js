@@ -241,7 +241,7 @@ class ComputableReference extends ReferenceWithObservers {
   static NEEDS_RECOMPUTE = new Object();
 
   /**
-   * Create a ComputableReference given a function that produces the value on access
+   * Create a ComputableReference given a function that produces the value,
    * and the type bound for that value.
    */
   constructor(computeFunction, type) {
@@ -338,8 +338,8 @@ function observe(object, lifespan, callback) {
 
 /**
  * In case lifespan is null, defaultLifespan() returns the default lifespan for
- * the given execution context.  Current implementation is trivial, just returning
- * top-level ForeverLifespan.
+ * the given execution context.  Current implementation is trivial: just return
+ * top-level ForeverLifespan instance.
  */
 function defaultLifespan(lifespan) {
   if (lifespan) {
@@ -351,7 +351,7 @@ function defaultLifespan(lifespan) {
 
 /**
  * Called when a fatal error is encountered.
- * Notifies the programmer by logging the message, showing an alert.
+ * Notifies the programmer by logging the message and showing an alert.
  * An exception is thrown to record the stack trace in developer console.
  */
 function panic(message) {
@@ -361,16 +361,17 @@ function panic(message) {
 }
 
 /**
- * A Zone encapsulates an execution context, such as an event loop.
- * It is possible to schedule observers or actions in a given zone; both are procedures.
+ * A Zone encapsulates execution context--for example, identifying an event loop.
+ * It is possible to schedule observers or actions in a given zone.
  *
- * Observer execution can be 'collapsed': if two or more instances of the same
- * observer are scheduled, they may be invoked onle once.
+ * Observer execution can be 'collapsed' by the implementation:
+ * if two or more instances of the same observer are scheduled,
+ * they may be invoked only once.
  * Scheduled actions are executed only after all pending observers are processed.
  */
 class Zone {
   /**
-   * Create a Zone instance that process observer and action queues
+   * Create a Zone instance that processes observer and action queues
    * on the main event loop.
    */
   constructor() {
@@ -383,7 +384,7 @@ class Zone {
 
   /**
    * Schedules observer for execution.
-   * If the observer is already on the queue, this is a no-op.
+   * If the observer already scheduled on the queue, this is a no-op.
    */
   scheduleObserver(observer) {
     FunctionType.check(observer);
@@ -475,7 +476,8 @@ class Zone {
 
 /**
  * A top-level Lifespan which is never finished, and therefore ignores onFinish() calls.
- * All other Lifespans are created through a hierarchy of subspans.
+ * All other Lifespans are created through a hierarchy of subspans,
+ * with ForeverLifespan at the top level.
  */
 class ForeverLifespan extends Lifespan {
   /**
@@ -607,7 +609,7 @@ function conditional(condExpression, thenExpression, elseExpression, lifespan, n
  * A reactive String join.  Takes References or values as arguments.
  *
  * Converts all argument values to Strings using toString(), concatenates them,
- * and returns a Reference to the result.  If an argument Reference changes state,
+ * and returns a Reference to the result.  If an argument References change state,
  * result Reference is updated.
  */
 function stringJoin() {

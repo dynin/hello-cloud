@@ -193,7 +193,7 @@ class Server {
       console.log(secretsMessage);
       return secretsJson;
     } catch (error) {
-      console.log("Scerets load error: " + error);
+      console.log("Secrets load error: " + error);
       return {};
     };
   }
