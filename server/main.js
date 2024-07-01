@@ -63,7 +63,7 @@ class Server {
     if (redirects.has(url)) {
       return this.redirect(redirects.get(url), response);
     } else if (url == "/favicon.ico") {
-      return this.errorResponse(204, response);
+      return this.respondWithStatus(204, response);
     } else if (url == SYNC_ENDPOINT) {
       return this.processSync(request, response);
     }
@@ -75,20 +75,20 @@ class Server {
 
     // Sanity/security checks on the URL
     if (!path.startsWith("common/") && !path.startsWith("client/")) {
-      return this.errorResponse(403, response);
+      return this.respondWithStatus(403, response);
     }
     const dot = path.lastIndexOf('.');
     if (dot < 0 || path.lastIndexOf('.', dot - 1) > 0) {
-      return this.errorResponse(403, response);
+      return this.respondWithStatus(403, response);
     }
 
     if (!fs.existsSync(path)) {
-      return this.errorResponse(404, response);
+      return this.respondWithStatus(404, response);
     }
 
     fs.readFile(path, (error, data) => {
       if (error) {
-        return this.errorResponse(500, response);
+        return this.respondWithStatus(500, response);
       }
 
       data = this.expandSecrets(data.toString());
@@ -98,7 +98,7 @@ class Server {
     });
   };
 
-  errorResponse(status, response) {
+  respondWithStatus(status, response) {
     response.writeHead(status);
     response.end(status + "!");
   }
@@ -120,7 +120,7 @@ class Server {
 
   processSync(request, response) {
     if (request.method != POST_METHOD) {
-      return this.errorResponse(405, response);
+      return this.respondWithStatus(405, response);
     }
 
     var body = "";
@@ -135,7 +135,7 @@ class Server {
 
       if (this.syncToken && token != this.syncToken) {
         console.log("Invalid token: " + token);
-        return this.errorResponse(403, response);
+        return this.respondWithStatus(403, response);
       }
 
       if (request == PULL_REQUEST) {
@@ -143,7 +143,7 @@ class Server {
       } else if (request == PUSH_REQUEST) {
         this.processPush(payload, response);
       } else {
-        return this.errorResponse(400, response);
+        return this.respondWithStatus(400, response);
       }
     });
   }
