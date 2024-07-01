@@ -5,8 +5,6 @@
  * https://dynin.com/berkeley-license/
  */
 
-const stylesNamespace = new Namespace("styles");
-
 class Style {
   constructor(name, cssClassName) {
     this.name = name;

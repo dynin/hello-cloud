@@ -5,8 +5,6 @@
  * https://dynin.com/berkeley-license/
  */
 
-const languageNamespace = new Namespace("language");
-
 const ConstructType = addNamespaceType(languageNamespace, "Construct",
     (value) => value instanceof Construct);
 

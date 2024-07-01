@@ -5,8 +5,6 @@
  * https://dynin.com/berkeley-license/
  */
 
-const viewsNamespace = new Namespace("views");
-
 const ViewType = addNamespaceType(viewsNamespace, "view", (value) => value instanceof View);
 
 class View {

@@ -9,8 +9,8 @@ function parseExpression(expression) {
   if (StringType.isInstance(expression)) {
     if (expression.length == 0) {
       return new ConstantConstruct("", StringType);
-    } else if (expression.charAt(0) == "'") {
-      return new ConstantConstruct(expression.substring(1), StringType);
+    } else if (expression.startsWith("s:")) {
+      return new ConstantConstruct(expression.substring(2), StringType);
     } else {
       const result = lookupMember(expression);
       if (result == null) {
@@ -38,6 +38,20 @@ function parseExpression(expression) {
   } else {
     return new ErrorConstruct("Unrecognized expression: " + expression);
   }
+}
+
+function lookupMember(identifier) {
+  const colon = identifier.indexOf(':');
+  if (colon < 0) {
+    return null;
+  }
+
+  const namespace = Namespace.namespacesByName.get(identifier.substring(0, colon));
+  if (namespace == null) {
+    return null;
+  }
+
+  return namespace.getMember(identifier.substring(colon + 1));
 }
 
 function parseAndCheck(expression) {

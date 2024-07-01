@@ -62,7 +62,7 @@ class Server {
 
     if (redirects.has(url)) {
       return this.redirect(redirects.get(url), response);
-    } else if (url == "favicon.ico") {
+    } else if (url == "/favicon.ico") {
       return this.errorResponse(204, response);
     } else if (url == SYNC_ENDPOINT) {
       return this.processSync(request, response);

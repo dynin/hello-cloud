@@ -89,21 +89,10 @@ class Method extends Member {
   }
 }
 
-function lookupMember(identifier) {
-  const colon = identifier.indexOf(':');
-  if (colon < 0) {
-    return null;
-  }
-
-  const namespace = Namespace.namespacesByName.get(identifier.substring(0, colon));
-  if (namespace == null) {
-    return null;
-  }
-
-  return namespace.getMember(identifier.substring(colon + 1));
-}
-
 const elementsNamespace = new Namespace("elements");
+const viewsNamespace = new Namespace("views");
+const stylesNamespace = new Namespace("styles");
+const languageNamespace = new Namespace("language");
 
 function addNamespaceType(namespace, name, isInstanceFunction) {
   const result = new Type(namespace, name, isInstanceFunction);
