@@ -8,15 +8,15 @@
 const counterText = ["elements:stringJoin",
   "s:The button was pressed ", "counter:state", "s: times."];
   // stringJoin("The button was pressed ", counterData.state, " times.");
-const counterLabel = ["views:makeTextView", counterText, "styles:Message"];
+const counterLabel = ["makeTextView", counterText, "styles:Message"];
 const contentView =
-    ["views:makeContainerView",
-        ["views:makeTextView", "s:Hello, Cloud: Counter Demo", "styles:Header"],
-        ["views:makeVisibleView",
-            ["views:makeContainerView",
+    ["makeContainerView",
+        ["makeTextView", "s:Hello, Cloud: Counter Demo", "styles:Header"],
+        ["makeVisibleView",
+            ["makeContainerView",
                 counterLabel,
-                ["views:makeButtonView", "s:Increment", "counter:increment"],
-                ["views:makeButtonView", "s:Reset", "counter:reset", "styles:RedText"]
+                ["makeButtonView", "s:Increment", "counter:increment"],
+                ["makeButtonView", "s:Reset", "counter:reset", "styles:RedText"]
             ],
             "counter:isInitialized"
         ]
