@@ -301,32 +301,43 @@ class ComputableReference extends ReferenceWithObservers {
       return;
     }
 
-    this.checkForCycles(anotherObject);
+    if (this.introducesCycle(anotherObject)) {
+      panic("Circular dependency for " + this);
+    }
 
     this.dependsOnReferences.push(anotherObject);
   }
 
   /**
    * Check for circular dependency.
-   * TODO(misha): optimize.
    */
-  checkForCycles(anotherReference) {
-    const dependencies = [ anotherReference ];
+  introducesCycle(anotherReference) {
+    if (anotherReference == this) {
+      return true;
+    }
+
+    const dependenciesList = [ anotherReference ];
+    const dependenciesSet = new Set();
+    dependenciesSet.add(anotherReference);
+
     var index;
-    for (index = 0; index < dependencies.length; ++index) {
-      const theReference = dependencies[index];
+    for (index = 0; index < dependenciesList.length; ++index) {
+      const theReference = dependenciesList[index];
       if (theReference == this) {
-        panic("Circular dependency for " + this);
+        return true;
       }
 
       if (theReference instanceof ComputableReference) {
         for (const dependence of theReference.dependsOnReferences) {
-          if (!dependencies.includes(dependence)) {
-            dependencies.push(dependence);
+          if (!dependenciesSet.has(dependence)) {
+            dependenciesList.push(dependence);
+            dependenciesSet.add(dependence);
           }
         }
       }
     }
+
+    return false;
   }
 }
 
