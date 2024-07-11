@@ -301,31 +301,53 @@ class ComputableReference extends ReferenceWithObservers {
       return;
     }
 
-    this.checkForCycles(anotherObject);
+    if (this.introducesCycle(anotherObject)) {
+      panic("Circular dependency for " + this);
+    }
 
     this.dependsOnReferences.push(anotherObject);
   }
 
   /**
    * Check for circular dependency.
-   * TODO(misha): optimize.
    */
-  checkForCycles(anotherReference) {
-    const dependencies = [ anotherReference ];
+  introducesCycle(anotherReference) {
+    if (anotherReference == this) {
+      return true;
+    }
+
+    const dependenciesList = [ anotherReference ];
+    const dependenciesSet = new Set();
+    dependenciesSet.add(anotherReference);
+
     var index;
-    for (index = 0; index < dependencies.length; ++index) {
-      const theReference = dependencies[index];
+    for (index = 0; index < dependenciesList.length; ++index) {
+      const theReference = dependenciesList[index];
       if (theReference == this) {
-        panic("Circular dependency for " + this);
+        return true;
       }
 
       if (theReference instanceof ComputableReference) {
         for (const dependence of theReference.dependsOnReferences) {
-          if (!dependencies.includes(dependence)) {
-            dependencies.push(dependence);
+          if (!dependenciesSet.has(dependence)) {
+            dependenciesList.push(dependence);
+            dependenciesSet.add(dependence);
           }
         }
       }
+    }
+
+    return false;
+  }
+
+  /**
+   * Add a dependency and introduce observer in one operation.
+   * The observer recomputes the reference.
+   */
+  observeAndDependsOn(object, lifespan) {
+    if (object instanceof Reference) {
+      object.observe(lifespan, this.recompute);
+      this.dependsOn(object);
     }
   }
 }
@@ -577,7 +599,7 @@ function makeComputableReference(computeFunction, type) {
 function notOp(expression, lifespan) {
   const result = makeComputableReference(() => !getValue(expression), BooleanType);
 
-  observe(expression, defaultLifespan(lifespan), result.recompute);
+  result.observeAndDependsOn(expression, defaultLifespan(lifespan));
 
   return result;
 }
@@ -594,8 +616,8 @@ function andOp(first, second, lifespan) {
 
   lifespan = defaultLifespan(lifespan);
 
-  observe(first, lifespan, result.recompute);
-  observe(second, lifespan, result.recompute);
+  result.observeAndDependsOn(first, lifespan);
+  result.observeAndDependsOn(second, lifespan);
 
   return result;
 }
@@ -637,7 +659,9 @@ function conditional(condExpression, thenExpression, elseExpression, lifespan, n
     result.setName(name);
   }
 
-  observe(condExpression, lifespan, result.recompute);
+  result.observeAndDependsOn(condExpression, lifespan);
+  result.dependsOn(thenExpression, lifespan);
+  result.dependsOn(elseExpression, lifespan);
 
   return result;
 }
@@ -664,7 +688,7 @@ function stringJoin() {
 
   const lifespan = defaultLifespan(null);  // TODO: handle lifespan
   for (var i = 0; i < joinList.length; ++i) {
-    observe(joinList[i], lifespan, result.recompute);
+    result.observeAndDependsOn(joinList[i], lifespan);
   }
 
   return result;
