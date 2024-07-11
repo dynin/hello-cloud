@@ -248,6 +248,7 @@ class ComputableReference extends ReferenceWithObservers {
     super(ComputableReference.NEEDS_RECOMPUTE, type);
     this.compute = computeFunction;
     this.recompute = () => this.doRecompute();
+    this.dependsOnReferences = [];
   }
 
   /**
@@ -290,6 +291,42 @@ class ComputableReference extends ReferenceWithObservers {
 
     this.value = ComputableReference.NEEDS_RECOMPUTE;
     this.internalTriggerObservers();
+  }
+
+  /**
+   * Add an object that this reference depends on.
+   */
+  dependsOn(anotherObject) {
+    if (!(anotherObject instanceof Reference)) {
+      return;
+    }
+
+    this.checkForCycles(anotherObject);
+
+    this.dependsOnReferences.push(anotherObject);
+  }
+
+  /**
+   * Check for circular dependency.
+   * TODO(misha): optimize.
+   */
+  checkForCycles(anotherReference) {
+    const dependencies = [ anotherReference ];
+    var index;
+    for (index = 0; index < dependencies.length; ++index) {
+      const theReference = dependencies[index];
+      if (theReference == this) {
+        panic("Circular dependency for " + this);
+      }
+
+      if (theReference instanceof ComputableReference) {
+        for (const dependence of theReference.dependsOnReferences) {
+          if (!dependencies.includes(dependence)) {
+            dependencies.push(dependence);
+          }
+        }
+      }
+    }
   }
 }
 
