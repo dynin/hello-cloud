@@ -64,6 +64,10 @@ function formatConstructAsText(construct) {
   return new ConstructTextFormatter().visit(construct, "");
 }
 
+const DOTDOTDOT = "\u00B7\u00B7\u00B7";
+const RIGHT_TRIANGLE = "\u25B8";
+const DOWN_TRIANGLE = "\u25BE";
+
 class ConstructViewFormatter extends ConstructVisitor {
   visitConstantConstruct(construct) {
     return makeTextView('"' + construct.value + '"', Styles.Literal);
@@ -89,7 +93,8 @@ class ConstructViewFormatter extends ConstructVisitor {
     if (!oneliner) {
       expanded = makeBoxed(true, BooleanType);
       content = new Array();
-      const link = makeLinkView("\u00B7\u00B7\u00B7",
+      const link = makeLinkView(
+          conditional(expanded, DOWN_TRIANGLE, RIGHT_TRIANGLE, null, "triangle"),
           () => setValue(expanded, !getValue(expanded)), Styles.BlueLink);
       views.push(link);
     }

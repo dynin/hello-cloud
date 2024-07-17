@@ -339,6 +339,17 @@ class ComputableReference extends ReferenceWithObservers {
 
     return false;
   }
+
+  /**
+   * Add a dependency and introduce observer in one operation.
+   * The observer recomputes the reference.
+   */
+  observeAndDependsOn(object, lifespan) {
+    if (object instanceof Reference) {
+      object.observe(lifespan, this.recompute);
+      this.dependsOn(object);
+    }
+  }
 }
 
 /**
@@ -588,7 +599,7 @@ function makeComputableReference(computeFunction, type) {
 function notOp(expression, lifespan) {
   const result = makeComputableReference(() => !getValue(expression), BooleanType);
 
-  observe(expression, defaultLifespan(lifespan), result.recompute);
+  result.observeAndDependsOn(expression, defaultLifespan(lifespan));
 
   return result;
 }
@@ -605,8 +616,8 @@ function andOp(first, second, lifespan) {
 
   lifespan = defaultLifespan(lifespan);
 
-  observe(first, lifespan, result.recompute);
-  observe(second, lifespan, result.recompute);
+  result.observeAndDependsOn(first, lifespan);
+  result.observeAndDependsOn(second, lifespan);
 
   return result;
 }
@@ -648,7 +659,9 @@ function conditional(condExpression, thenExpression, elseExpression, lifespan, n
     result.setName(name);
   }
 
-  observe(condExpression, lifespan, result.recompute);
+  result.observeAndDependsOn(condExpression, lifespan);
+  result.dependsOn(thenExpression, lifespan);
+  result.dependsOn(elseExpression, lifespan);
 
   return result;
 }
@@ -675,7 +688,7 @@ function stringJoin() {
 
   const lifespan = defaultLifespan(null);  // TODO: handle lifespan
   for (var i = 0; i < joinList.length; ++i) {
-    observe(joinList[i], lifespan, result.recompute);
+    result.observeAndDependsOn(joinList[i], lifespan);
   }
 
   return result;
