@@ -39,7 +39,8 @@ class VisibleView extends View {
       }
     }, ObjectType);
 
-    observe(visibleView.isVisible, lifespan, renderedView.recompute);
+    renderedView.observeAndDependsOn(visibleView.isVisible, lifespan);
+    renderedView.dependsOn(visibleView.view);
 
     return renderedView;
   }
@@ -63,7 +64,6 @@ class TextView extends View {
   }
 
   render(lifespan) {
-
     const textState = this;
 
     const renderedText = makeComputableReference(function() {
@@ -82,8 +82,8 @@ class TextView extends View {
     }, ObjectType);
 
 
-    observe(this.style, lifespan, renderedText.recompute);
-    observe(this.text, lifespan, renderedText.recompute);
+    renderedText.observeAndDependsOn(this.style, lifespan);
+    renderedText.observeAndDependsOn(this.text, lifespan);
 
     return renderedText;
   }
@@ -106,27 +106,21 @@ class DivView extends View {
 
   render(lifespan) {
     const contentState = this;
-    var subSpan = null;
+    const renderedContent = getValue(contentState.content).render(lifespan);
 
     const contentElement = document.createElement("div");
 
-    function updateState() {
-      if (subSpan != null) {
-        subSpan.finish();
-      }
-      subSpan = lifespan.makeSubSpan();
-
-      const rendered = getValue(contentState.content).render(lifespan);
-      contentElement.replaceChildren(getValue(rendered));
+    const renderedDiv = makeComputableReference(function() {
+      contentElement.replaceChildren(getValue(renderedContent));
       updateStyle(contentElement, contentState.style);
-      observe(rendered, subSpan, updateState);
-    }
 
-    updateState();
-    observe(this.style, lifespan, updateState);
-    observe(this.content, lifespan, updateState);
+      return contentElement;
+    }, ObjectType);
 
-    return contentElement;
+    renderedDiv.observeAndDependsOn(renderedContent, lifespan);
+    renderedDiv.observeAndDependsOn(this.style, lifespan);
+
+    return renderedDiv;
   }
 }
 
@@ -144,18 +138,19 @@ class ButtonView extends View {
 
     const buttonElement = document.createElement("button");
 
-    function updateState() {
+    const renderedButton = makeComputableReference(function() {
       buttonElement.textContent = getValue(buttonState.text);
       buttonElement.onclick = () => buttonZone.scheduleAction(getValue(buttonState.action));
       updateStyle(buttonElement, buttonState.style);
-    }
 
-    updateState();
-    observe(this.text, lifespan, updateState);
-    observe(this.action, lifespan, updateState);
-    observe(this.style, lifespan, updateState);
+      return buttonElement;
+    }, ObjectType);
 
-    return buttonElement;
+    renderedButton.observeAndDependsOn(this.text, lifespan);
+    renderedButton.observeAndDependsOn(this.action, lifespan);
+    renderedButton.observeAndDependsOn(this.style, lifespan);
+
+    return renderedButton;
   }
 }
 
@@ -174,21 +169,21 @@ class LinkView extends View {
     const linkElement = document.createElement("a");
     linkElement.setAttribute("href", "#");
 
-    function updateState() {
+    const renderedLink = makeComputableReference(function() {
       linkElement.textContent = getValue(linkState.text);
       linkElement.onclick = function() {
         linkZone.scheduleAction(getValue(linkState.action));
         return false;
       }
       updateStyle(linkElement, linkState.style);
-    }
+      return linkElement;
+    }, ObjectType);
 
-    updateState();
-    observe(this.text, lifespan, updateState);
-    observe(this.action, lifespan, updateState);
-    observe(this.style, lifespan, updateState);
+    renderedLink.observeAndDependsOn(this.text, lifespan);
+    renderedLink.observeAndDependsOn(this.action, lifespan);
+    renderedLink.observeAndDependsOn(this.style, lifespan);
 
-    return linkElement;
+    return renderedLink;
   }
 }
 
@@ -222,7 +217,7 @@ class ContainerView extends View {
       return result;
     }, ObjectType);
 
-    observe(this.views, lifespan, renderedContainer.recompute);
+    renderedContainer.observeAndDependsOn(this.views, lifespan);
 
     return renderedContainer;
   }
@@ -267,9 +262,9 @@ class ListView extends View {
     }, ObjectType);
 
 
-    observe(this.list, lifespan, renderedList.recompute);
-    observe(this.makeView, lifespan, renderedList.recompute);
-    observe(this.emptyView, lifespan, renderedList.recompute);
+    renderedList.observeAndDependsOn(this.list, lifespan);
+    renderedList.observeAndDependsOn(this.makeView, lifespan);
+    renderedList.observeAndDependsOn(this.emptyView, lifespan);
 
     return renderedList;
   }
