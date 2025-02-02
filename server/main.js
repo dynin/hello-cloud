@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 Dynin Labs, Inc. All rights reserved.
+ * Copyright 2024-2025 Dynin Labs, Inc. All rights reserved.
  * Use of this source code is governed by a BSD-style
  * license that can be found in the LICENSE file or at
  * https://dynin.com/berkeley-license/
