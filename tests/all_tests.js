@@ -16,6 +16,24 @@ function loadCommonModule(moduleName) {
 loadCommonModule("elements");
 loadCommonModule("reflection");
 
+function test_enums() {
+  const TestEnum = addEnumType(elementsNamespace, "TestEnum", [ "FOO", "BAR", "BAZ" ]);
+
+  if (TestEnum.FOO.index != 0 || TestEnum.FOO.name != "FOO") {
+    panic("Failed enum value check");
+  }
+
+  if (TestEnum.BAR.index != 1 || TestEnum.BAR.name != "BAR") {
+    panic("Failed enum value check");
+  }
+
+  if (!TestEnum.isInstance(TestEnum.FOO) ||
+      !TestEnum.isInstance(TestEnum.BAZ) ||
+      TestEnum.isInstance("FOO")) {
+    panic("Failed enum instance check");
+  }
+}
+
 function test_dependecies() {
   const ref1 = makeComputableReference(true, BooleanType);
   const ref2 = makeComputableReference(true, BooleanType);
@@ -30,6 +48,10 @@ function test_dependecies() {
     panic("Failed cycle check");
   }
 }
+
+process.stdout.write("Testing enums...");
+test_enums();
+process.stdout.write("Ok!\n");
 
 process.stdout.write("Testing dependencies...");
 test_dependecies();

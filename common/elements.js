@@ -678,7 +678,7 @@ function stringJoin() {
 
   function doJoin() {
     var s = "";
-    for (var i = 0; i < joinList.length; ++i) {
+    for (let i = 0; i < joinList.length; ++i) {
       s += getValue(joinList[i]).toString();
     }
     return s;
@@ -687,7 +687,7 @@ function stringJoin() {
   const result = makeComputableReference(doJoin, StringType);
 
   const lifespan = defaultLifespan(null);  // TODO: handle lifespan
-  for (var i = 0; i < joinList.length; ++i) {
+  for (let i = 0; i < joinList.length; ++i) {
     result.observeAndDependsOn(joinList[i], lifespan);
   }
 

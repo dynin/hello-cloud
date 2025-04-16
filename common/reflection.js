@@ -100,6 +100,22 @@ function addNamespaceType(namespace, name, isInstanceFunction) {
   return result;
 }
 
+function addEnumType(namespace, name, values) {
+  const all = [];
+  function isInstanceFunction(value) { return all.includes(value); }
+  const result = addNamespaceType(namespace, name, isInstanceFunction);
+
+  for (let i = 0; i < values.length; ++i) {
+    const valueName = values[i];
+    const value = { name: valueName, index: i };
+    result[valueName] = value;
+    all.push(value);
+  }
+
+  result['all'] = all;
+  return result;
+}
+
 function addElementType(name, isInstanceFunction) {
   return addNamespaceType(elementsNamespace, name, isInstanceFunction);
 }
