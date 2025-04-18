@@ -109,10 +109,16 @@ function addEnumType(namespace, name, values) {
     const valueName = values[i];
     const value = { name: valueName, index: i };
     result[valueName] = value;
+
     all.push(value);
   }
 
   result['all'] = all;
+
+  for (let i = 0; i < all.length; ++i) {
+    namespace.addMember(new Field(namespace, all[i].name, new ConstantReference(all[i], result)));
+  }
+
   return result;
 }
 
@@ -142,5 +148,12 @@ const ObjectType = addElementType("object", (value) => true);
 const TypeType = addElementType("type", (value) => value instanceof Type);
 
 const LifespanType = addElementType("lifespan", (value) => value instanceof Lifespan);
+
+const SyncStatus = addEnumType(elementsNamespace, "SyncStatus",
+    [ "NOT_INITIALIZED", "NOT_AUTHENTICATED", "OFFLINE", "ONLINE" ]);
+
+elementsNamespace.addMember(new Method(elementsNamespace, "equalsOp", BooleanType, equalsOp));
+
+elementsNamespace.addMember(new Method(elementsNamespace, "notEqualsOp", BooleanType, notEqualsOp));
 
 elementsNamespace.addMember(new Method(elementsNamespace, "stringJoin", StringType, stringJoin));

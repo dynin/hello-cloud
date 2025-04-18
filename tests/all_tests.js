@@ -32,6 +32,10 @@ function test_enums() {
       TestEnum.isInstance("FOO")) {
     panic("Failed enum instance check");
   }
+
+  if (SyncStatus.ONLINE.index != 3 || SyncStatus.ONLINE.name != "ONLINE") {
+    panic("Failed enum value check");
+  }
 }
 
 function test_dependecies() {

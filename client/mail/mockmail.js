@@ -10,23 +10,22 @@ function initalizeMockGmail() {
   setValue(mailData.deauthenticate, deauthenticate);
   setValue(mailData.fetchLabels, fetchLabels);
   setValue(mailData.fetchThreads, fetchThreads);
-  setValue(mailData.isInitialized, true);
-  setValue(mailData.isOnline, true);
+  setValue(mailData.syncStatus, SyncStatus.NOT_AUTHENTICATED);
 }
 
 function authenticate() {
-  if (!getValue(mailData.isAuthenticated)) {
-    setValue(mailData.isAuthenticated, true);
+  if (getValue(mailData.syncStatus) == SyncStatus.NOT_AUTHENTICATED) {
+    setValue(mailData.syncStatus, SyncStatus.ONLINE);
     fetchLabels();
     fetchThreads();
   };
 }
 
 function deauthenticate() {
-  if (getValue(mailData.isAuthenticated)) {
+  if (getValue(mailData.syncStatus) == SyncStatus.ONLINE) {
     setValue(mailData.labelsList, null);
     setValue(mailData.threadsList, null);
-    setValue(mailData.isAuthenticated, false);
+    setValue(mailData.syncStatus, SyncStatus.NOT_AUTHENTICATED);
   }
 }
 
@@ -37,7 +36,7 @@ function makeMockLabel() {
 }
 
 function fetchLabels() {
-  if (getValue(mailData.isAuthenticated)) {
+  if (getValue(mailData.syncStatus) == SyncStatus.ONLINE) {
     const result = new Array();
     // Sometimes there are no labels, to check ListView works
     if (Math.floor(Math.random() * 7) != 0) {
@@ -56,7 +55,7 @@ function makeMockThread() {
 }
 
 function fetchThreads() {
-  if (getValue(mailData.isAuthenticated)) {
+  if (getValue(mailData.syncStatus) == SyncStatus.ONLINE) {
     const result = new Array();
     // Sometimes there are no labels, to check ListView works
     if (Math.floor(Math.random() * 7) != 0) {

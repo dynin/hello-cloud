@@ -74,17 +74,16 @@ class DatastoreSync {
 
   pullCallback(response) {
     this.isRequestInProgress = false;
-    setValue(this.datastore.isOnline, true);
     this.zone.internalSuppressObserver(this.datastoreObserver);
     this.datastore.fromJson(JSON.parse(response));
     this.zone.internalUnsuppressObserver(this.datastoreObserver);
-    setValue(this.datastore.isInitialized, true);
+    setValue(this.datastore.syncStatus, SyncStatus.ONLINE);
     this.scheduleSyncRequest();
   }
 
   pullErrorCallback() {
     this.isRequestInProgress = false;
-    setValue(this.datastore.isOnline, false);
+    setValue(this.datastore.syncStatus, SyncStatus.OFFLINE);
     this.scheduleSyncRequest();
   }
 
@@ -98,13 +97,13 @@ class DatastoreSync {
 
   pushCallback(response) {
     this.isRequestInProgress = false;
-    setValue(this.datastore.isOnline, true);
+    setValue(this.datastore.syncStatus, SyncStatus.ONLINE);
     this.scheduleSyncRequest();
   }
 
   pushErrorCallback() {
     this.isRequestInProgress = false;
-    setValue(this.datastore.isOnline, false);
+    setValue(this.datastore.syncStatus, SyncStatus.OFFLINE);
     this.shouldPush = true;
     this.scheduleSyncRequest();
   }

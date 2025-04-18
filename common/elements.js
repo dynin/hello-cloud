@@ -623,6 +623,42 @@ function andOp(first, second, lifespan) {
 }
 
 /**
+ * A reactive boolean equality operator.
+ * Given two objects as arguments, returns a Reference with a boolean value
+ * that is true iff both objects are equal.
+ * While both arguments can be values and not References,
+ * in this case the == operator can be used directly.
+ */
+function equalsOp(first, second, lifespan) {
+  const result = makeComputableReference(() => getValue(first) == getValue(second), BooleanType);
+
+  lifespan = defaultLifespan(lifespan);
+
+  result.observeAndDependsOn(first, lifespan);
+  result.observeAndDependsOn(second, lifespan);
+
+  return result;
+}
+
+/**
+ * A reactive boolean inequality operator.
+ * Given two objects as arguments, returns a Reference with a boolean value
+ * that is true iff both objects are not equal.
+ * While both arguments can be values and not References,
+ * in this case the != operator can be used directly.
+ */
+function notEqualsOp(first, second, lifespan) {
+  const result = makeComputableReference(() => getValue(first) != getValue(second), BooleanType);
+
+  lifespan = defaultLifespan(lifespan);
+
+  result.observeAndDependsOn(first, lifespan);
+  result.observeAndDependsOn(second, lifespan);
+
+  return result;
+}
+
+/**
  * A reactive conditional expression.
  * The 3 primary arguments are: condition expression, then expression, else expression.
  * All of them can be either References or values (although condition expression

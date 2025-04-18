@@ -18,7 +18,7 @@ const contentView =
                 ["makeButtonView", "s:Increment", "counter:increment"],
                 ["makeButtonView", "s:Reset", "counter:reset", "styles:RedText"]
             ],
-            "counter:isInitialized"
+            ["elements:notEqualsOp", "counter:syncStatus", "elements:NOT_INITIALIZED"]
         ]
     ];
 
@@ -46,7 +46,7 @@ function main() {
   setRootView(makeContainerView(mainView, makeStatusView(counterData, viewSource)));
 
   if (isOnFilesystem()) {
-    setValue(counterData.isInitialized, true);
+    setValue(counterData.syncStatus, SyncStatus.ONLINE);
   } else {
     new DatastoreSync(counterData, notOp(isViewSource)).start();
   }

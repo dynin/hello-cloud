@@ -28,7 +28,7 @@ function main() {
       makeTextView("Hello, Cloud: Email", Styles.Header),
       makeVisibleView(
         makeButtonView("Authenticate", mailData.authenticate),
-        andOp(mailData.isInitialized, notOp(mailData.isAuthenticated))),
+        equalsOp(mailData.syncStatus, SyncStatus.NOT_AUTHENTICATED)),
       makeVisibleView(
         makeContainerView(
           makeButtonView("Reload", mailData.fetchThreads),
@@ -37,7 +37,7 @@ function main() {
               renderMessage,
               makeTextView("No messages", Styles.NoMessages))
         ),
-        mailData.isAuthenticated),
+        equalsOp(mailData.syncStatus, SyncStatus.ONLINE)),
       makeStatusView(mailData)
     )
   );

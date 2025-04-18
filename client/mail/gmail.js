@@ -65,8 +65,7 @@ function maybeIsInitialized() {
     setValue(mailData.deauthenticate, deauthenticate);
     setValue(mailData.fetchLabels, fetchLabels);
     setValue(mailData.fetchThreads, fetchThreads);
-    setValue(mailData.isInitialized, true);
-    setValue(mailData.isOnline, true);
+    setValue(mailData.syncStatus, SyncStatus.NOT_AUTHENTICATED);
   }
 }
 
@@ -76,11 +75,10 @@ function maybeIsInitialized() {
 function authenticate() {
   tokenClient.callback = (resp) => {
     if (resp.error !== undefined) {
-      setValue(mailData.isOnline, false);
+      setValue(mailData.syncStatus, SyncStatus.NOT_AUTHENTICATED);
       throw (resp);
     }
-    setValue(mailData.isOnline, true);
-    setValue(mailData.isAuthenticated, true);
+    setValue(mailData.syncStatus, SyncStatus.ONLINE);
     fetchLabels();
     fetchThreads();
   };
@@ -104,12 +102,12 @@ function deauthenticate() {
     google.accounts.oauth2.revoke(token.access_token);
     gapi.client.setToken('');
     setValue(mailData.labelsList, null);
-    setValue(mailData.isAuthenticated, false);
+    setValue(mailData.syncStatus, SyncStatus.NOT_AUTHENTICATED);
   }
 }
 
 function requestFailed(error) {
-  setValue(mailData.isOnline, false);
+  setValue(mailData.syncStatus, SyncStatus.NOT_AUTHENTICATED);
   console.log(error);
 }
 
@@ -121,8 +119,7 @@ function fetchLabels() {
     gapi.client.gmail.users.labels.list({
       'userId': 'me',
     }).then((response) => {
-      setValue(mailData.isOnline, true);
-      if (getValue(mailData.isAuthenticated)) {
+      if (getValue(mailData.syncStatus) == SyncStatus.ONLINE) {
         setValue(mailData.labelsList, response.result.labels);
       }
     }, requestFailed);
@@ -139,8 +136,7 @@ function fetchThreads() {
       'userId': 'me',
       'maxResults': 20
     }).then((response) => {
-      setValue(mailData.isOnline, true);
-      if (getValue(mailData.isAuthenticated)) {
+      if (getValue(mailData.syncStatus) == SyncStatus.ONLINE) {
         // {"id":"string","snippet":"text","historyId":"number"}
         // TODO: validate the results and handle HTML entities in snippets
         setValue(mailData.threadsList, response.result.threads);

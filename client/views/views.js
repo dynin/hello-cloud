@@ -318,10 +318,12 @@ addViewMaker("makeContainerView", makeContainerView);
 addViewMaker("makeListView", makeListView);
 
 function makeStatusView(datastore, viewSource) {
-  return makeDivView(conditional(datastore.isInitialized,
+  return makeDivView(conditional(
+      notEqualsOp(datastore.syncStatus, SyncStatus.NOT_INITIALIZED),
       makeContainerView(
           viewSource,
-          conditional(datastore.isOnline,
+          conditional(
+              equalsOp(datastore.syncStatus, SyncStatus.ONLINE),
               makeTextView("Online", Styles.GreenStatus),
               makeTextView("Offline", Styles.YellowStatus))),
       makeTextView("Initializing", Styles.BlueStatus)), Styles.StatusBlock);

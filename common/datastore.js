@@ -9,10 +9,7 @@
  * Convert datastore definition (such as the one in counterdata.js) into
  * Datastore object.
  *
- * The following boolean Boxed objects are added to the datastore:
- * isInitialized —— the datastore can be accessed;
- * isAuthenticated —— user credentials are accepted;
- * isOnline -- the connection to the server is working.
+ * The syncStatus object (as a Boxed SyncStatus) is added to the datastore.
  *
  * TODO: implement three-way merge to handle offline/high-latency environments.
  */
@@ -20,9 +17,7 @@ class Datastore extends Namespace {
   constructor(name, members) {
     super(name);
 
-    this.addDataMember("isInitialized", makeBoxed(false, BooleanType));
-    this.addDataMember("isAuthenticated", makeBoxed(false, BooleanType));
-    this.addDataMember("isOnline", makeBoxed(false, BooleanType));
+    this.addDataMember("syncStatus", makeBoxed(SyncStatus.NOT_INITIALIZED, SyncStatus));
 
     for (const memberName in members) {
       this.addDataMember(memberName, members[memberName]);
