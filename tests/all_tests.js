@@ -53,10 +53,38 @@ function test_dependecies() {
   }
 }
 
+function test_sync() {
+  let boxed = makeBoxed("foo", StringType);
+  var syncCalled = false;
+  boxed.setSyncFunction(() => syncCalled = true);
+
+  sync(boxed, Priority.NORMAL, ForeverLifespan.instance);
+  if (!syncCalled) {
+    panic("Failed sync check");
+  }
+
+  syncCalled = false;
+  sync(boxed, Priority.LOW, ForeverLifespan.instance);
+  if (syncCalled) {
+    panic("Failed sync check");
+  }
+
+  const joined = stringJoin(boxed, "bar");
+  sync(joined, Priority.HIGH, ForeverLifespan.instance);
+  if (!syncCalled) {
+    panic("Failed sync check");
+  }
+
+}
+
 process.stdout.write("Testing enums...");
 test_enums();
 process.stdout.write("Ok!\n");
 
 process.stdout.write("Testing dependencies...");
 test_dependecies();
+process.stdout.write("Ok!\n");
+
+process.stdout.write("Testing sync...");
+test_sync();
 process.stdout.write("Ok!\n");

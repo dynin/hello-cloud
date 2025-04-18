@@ -152,6 +152,9 @@ const LifespanType = addElementType("lifespan", (value) => value instanceof Life
 const SyncStatus = addEnumType(elementsNamespace, "SyncStatus",
     [ "NOT_INITIALIZED", "NOT_AUTHENTICATED", "OFFLINE", "ONLINE" ]);
 
+const Priority = addEnumType(elementsNamespace, "Priority",
+    [ "NONE", "LOWEST", "LOW", "NORMAL", "HIGH", "HIGHEST" ]);
+
 elementsNamespace.addMember(new Method(elementsNamespace, "equalsOp", BooleanType, equalsOp));
 
 elementsNamespace.addMember(new Method(elementsNamespace, "notEqualsOp", BooleanType, notEqualsOp));

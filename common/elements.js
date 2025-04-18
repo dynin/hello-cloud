@@ -89,6 +89,13 @@ class Reference {
   }
 
   /**
+   * Initiate a synchronization request for this reference with a given lifespan.
+   */
+  sync(priority, lifespan) {
+    panic("Must implement sync()");
+  }
+
+  /**
    * Validate the value type. Panics if type check fails.
    */
   typecheck(value) {
@@ -130,6 +137,12 @@ class ConstantReference extends Reference {
    */
   observe(lifespan, callback) {
   }
+
+  /**
+   * The value never changes, so sync() is a no-op.
+   */
+  sync(priority, lifespan) {
+  }
 }
 
 /**
@@ -142,6 +155,7 @@ class ReferenceWithObservers extends Reference {
    */
   constructor(initialValue, type) {
     super(initialValue, type);
+    this.currentPriority = Priority.NONE;
     this.observers = new Array();
   }
 
@@ -178,6 +192,26 @@ class ReferenceWithObservers extends Reference {
       }
     }
   }
+
+  /**
+   * Initiate network sync if the requested priority is higher than current.
+   */
+  sync(priority, lifespan) {
+    Priority.check(priority);
+    LifespanType.check(lifespan);
+
+    if (priority.index > this.currentPriority.index) {
+      this.currentPriority = priority;
+      this.doSync(priority, lifespan);
+    }
+  }
+
+  /**
+   * Implements synchronization.
+   * Do not call directly; use sync() instead.
+   */
+  doSync(priority, lifespan) {
+  }
 }
 
 /**
@@ -205,6 +239,17 @@ class Boxed extends ReferenceWithObservers {
    */
   constructor(initialValue, type) {
     super(initialValue, type);
+    this.onSync = null;
+  }
+
+  setSyncFunction(syncFunction) {
+    FunctionType.check(syncFunction);
+
+    if (this.onSync != null) {
+      panic("Already specified a sync function.")
+    } else {
+      this.onSync = syncFunction;
+    }
   }
 
   /**
@@ -224,6 +269,15 @@ class Boxed extends ReferenceWithObservers {
 
     this.value = newValue;
     this.internalTriggerObservers();
+  }
+
+  /**
+   * Call sync function if it was specified.
+   */
+  doSync(priority, lifespan) {
+    if (this.onSync != null) {
+      this.onSync(priority, lifespan);
+    }
   }
 }
 
@@ -291,6 +345,15 @@ class ComputableReference extends ReferenceWithObservers {
 
     this.value = ComputableReference.NEEDS_RECOMPUTE;
     this.internalTriggerObservers();
+  }
+
+  /**
+   * Call sync on dependencies.
+   */
+  doSync(priority, lifespan) {
+    for (const dependence of this.dependsOnReferences) {
+      sync(dependence, priority, lifespan);
+    }
   }
 
   /**
@@ -392,6 +455,18 @@ function observe(object, lifespan, callback) {
 
   if (object instanceof Reference) {
     object.observe(lifespan, callback);
+  }
+}
+
+/**
+ * Initiate a synchronization request for the given object at a given priority.
+ */
+function sync(object, priority, lifespan) {
+  Priority.check(priority);
+  LifespanType.check(lifespan);
+
+  if (object instanceof Reference) {
+    object.sync(priority, lifespan);
   }
 }
 
