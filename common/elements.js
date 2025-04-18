@@ -484,13 +484,22 @@ function defaultLifespan(lifespan) {
 }
 
 /**
+ * Check whether the code is running on the server, with Node.js.
+ */
+function isOnServer() {
+  return typeof process !== 'undefined' && process.versions && process.versions.node;
+}
+
+/**
  * Called when a fatal error is encountered.
  * Notifies the programmer by logging the message and showing an alert.
  * An exception is thrown to record the stack trace in developer console.
  */
 function panic(message) {
   console.log(message);
-  alert("Fatal error: " + message);
+  if (!isOnServer()) {
+    alert("Fatal error: " + message);
+  }
   throw message;
 }
 

@@ -16,7 +16,7 @@ function loadCommonModule(moduleName) {
 loadCommonModule("elements");
 loadCommonModule("reflection");
 
-function test_enums() {
+function testEnums() {
   const TestEnum = addEnumType(elementsNamespace, "TestEnum", [ "FOO", "BAR", "BAZ" ]);
 
   if (TestEnum.FOO.index != 0 || TestEnum.FOO.name != "FOO") {
@@ -38,7 +38,7 @@ function test_enums() {
   }
 }
 
-function test_dependecies() {
+function testDependecies() {
   const ref1 = makeComputableReference(true, BooleanType);
   const ref2 = makeComputableReference(true, BooleanType);
   const ref3 = makeComputableReference(true, BooleanType);
@@ -53,7 +53,7 @@ function test_dependecies() {
   }
 }
 
-function test_sync() {
+function testSync() {
   let boxed = makeBoxed("foo", StringType);
   var syncCalled = false;
   boxed.setSyncFunction(() => syncCalled = true);
@@ -74,17 +74,14 @@ function test_sync() {
   if (!syncCalled) {
     panic("Failed sync check");
   }
-
 }
 
-process.stdout.write("Testing enums...");
-test_enums();
-process.stdout.write("Ok!\n");
+function runTest(name, testProcedure) {
+  process.stdout.write("Testing " + name + "... ");
+  testProcedure();
+  process.stdout.write("Ok!\n");
+}
 
-process.stdout.write("Testing dependencies...");
-test_dependecies();
-process.stdout.write("Ok!\n");
-
-process.stdout.write("Testing sync...");
-test_sync();
-process.stdout.write("Ok!\n");
+runTest("enums", testEnums);
+runTest("dependencies", testDependecies);
+runTest("sync", testSync);
