@@ -16,9 +16,15 @@ class DatastoreSync {
     this.shouldPush = false;
     this.datastoreObserver = () => this.datastoreChanged();
     this.startSync = () => this.startSyncRequest();
+
+    // TODO: handle multiple syncs with raising priorities
+    datastore.syncStatus.setSyncFunction((priority, lifespan) =>
+        this.start(priority, lifespan));
   }
 
-  start(lifespan) {
+  start(priority, lifespan) {
+    console.log("Syncing at " + priority.name + " priority");
+
     lifespan = defaultLifespan(lifespan);
     this.zone = lifespan.zone;
 

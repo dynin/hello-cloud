@@ -276,6 +276,7 @@ class Boxed extends ReferenceWithObservers {
    */
   doSync(priority, lifespan) {
     if (this.onSync != null) {
+      // TODO: use scheduleAction()
       this.onSync(priority, lifespan);
     }
   }
@@ -467,6 +468,8 @@ function sync(object, priority, lifespan) {
 
   if (object instanceof Reference) {
     object.sync(priority, lifespan);
+  } else if (object instanceof Datastore) {
+    sync(object.syncStatus, priority, lifespan);
   }
 }
 

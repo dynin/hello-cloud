@@ -41,13 +41,15 @@ function main() {
     const sourceText = formatConstructAsText(parsedContent);
     sourceView = makeTextView(sourceText, Styles.Code);
   }
-  const mainView = conditional(isViewSource, sourceView, content);
 
-  setRootView(makeContainerView(mainView, makeStatusView(counterData, viewSource)));
+  const mainView = conditional(isViewSource, sourceView, content);
+  const rootView = makeContainerView(mainView, makeStatusView(counterData, viewSource));
+  setRootView(rootView);
 
   if (isOnFilesystem()) {
     setValue(counterData.syncStatus, SyncStatus.ONLINE);
   } else {
-    new DatastoreSync(counterData, notOp(isViewSource)).start();
+    new DatastoreSync(counterData, notOp(isViewSource));
+    sync(counterData, Priority.NORMAL, ForeverLifespan.instance);
   }
 }

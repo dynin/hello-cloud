@@ -5,6 +5,8 @@
  * https://dynin.com/berkeley-license/
  */
 
+const SYNC_STATUS_NAME = "syncStatus";
+
 /**
  * Convert datastore definition (such as the one in counterdata.js) into
  * Datastore object.
@@ -17,7 +19,7 @@ class Datastore extends Namespace {
   constructor(name, members) {
     super(name);
 
-    this.addDataMember("syncStatus", makeBoxed(SyncStatus.NOT_INITIALIZED, SyncStatus));
+    this.addDataMember(SYNC_STATUS_NAME, makeBoxed(SyncStatus.NOT_INITIALIZED, SyncStatus));
 
     for (const memberName in members) {
       this.addDataMember(memberName, members[memberName]);
@@ -57,6 +59,10 @@ class Datastore extends Namespace {
       this.addMember(new Method(this, name, NullType, ref));
     } else {
       this.addMember(new Field(this, name, ref));
+    }
+
+    if (name != SYNC_STATUS_NAME && ref instanceof Boxed) {
+      ref.setSyncFunction((priority, lifespan) => sync(this.syncStatus, priority, lifespan));
     }
 
     ref.setName(name);
