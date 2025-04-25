@@ -4,7 +4,7 @@ cd `dirname $0`
 
 # secrets.json contains secrets that are not checked into source control.
 # It should include at least SYNC_TOKEN.
-# For mail client to work, it should have GMAIL_CLIENT_ID and GMAIL_API_KEY.
+# For the mail client to work, it must have a GMAIL_CLIENT_ID and GMAIL_API_KEY.
 SECRETS=data/secrets.json
 if ! test -f $SECRETS
 then

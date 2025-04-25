@@ -276,8 +276,7 @@ class Boxed extends ReferenceWithObservers {
    */
   doSync(priority, lifespan) {
     if (this.onSync != null) {
-      // TODO: use scheduleAction()
-      this.onSync(priority, lifespan);
+      lifespan.zone.scheduleAction(() => this.onSync(priority, lifespan));
     }
   }
 }

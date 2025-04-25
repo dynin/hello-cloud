@@ -16,6 +16,10 @@ function loadCommonModule(moduleName) {
 loadCommonModule("elements");
 loadCommonModule("reflection");
 
+function processEventQueues() {
+  ForeverLifespan.instance.zone.processQueues();
+}
+
 function testEnums() {
   const TestEnum = addEnumType(elementsNamespace, "TestEnum", [ "FOO", "BAR", "BAZ" ]);
 
@@ -59,18 +63,21 @@ function testSync() {
   boxed.setSyncFunction(() => syncCalled = true);
 
   sync(boxed, Priority.NORMAL, ForeverLifespan.instance);
+  processEventQueues();
   if (!syncCalled) {
     panic("Failed sync check");
   }
 
   syncCalled = false;
   sync(boxed, Priority.LOW, ForeverLifespan.instance);
+  processEventQueues();
   if (syncCalled) {
     panic("Failed sync check");
   }
 
   const joined = stringJoin(boxed, "bar");
   sync(joined, Priority.HIGH, ForeverLifespan.instance);
+  processEventQueues();
   if (!syncCalled) {
     panic("Failed sync check");
   }
