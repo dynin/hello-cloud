@@ -291,14 +291,12 @@ function makeLinkView(text, action, style) {
 }
 
 function makeContainerView() {
-  if (arguments.length == 0) {
-    panic("makeContainerView()'s argument list cannot be empty.");
-  } else if (arguments.length == 1) {
-    ListType.check(arguments[0]);
-    return new ContainerView(arguments[0]);
-  } else {
-    return new ContainerView([...arguments]);
-  }
+  return new ContainerView([...arguments]);
+}
+
+function makeContainerViewFromList(viewList) {
+  ListType.check(viewList);
+  return new ContainerView(viewList);
 }
 
 function makeListView(list, makeView, emptyView) {
