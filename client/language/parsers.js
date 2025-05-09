@@ -56,9 +56,9 @@ function parseExpression(expression, context) {
     } else {
       return new ErrorConstruct("Field or method expected: " + expression);
     }
-  } else if (ListType.isInstance(expression)) {
+  } else if (ArrayType.isInstance(expression)) {
     if (expression.length == 0) {
-      return new ConstantConstruct([], ListType);
+      return new ConstantConstruct(new List([]), ListType);
     }
 
     const functionConstruct = parseExpression(expression[0], context);

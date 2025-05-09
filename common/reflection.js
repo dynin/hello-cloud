@@ -133,11 +133,14 @@ const StringType = addElementType("string", (value) => typeof value == "string")
 const IntegerType = addElementType("integer",
     (value) => typeof value == "number" && Number.isInteger(value));
 
-const ListType = addElementType("list", (value) => Array.isArray(value));
+// Arrays used for low-level lists
+const ArrayType = addElementType("array", (value) => Array.isArray(value));
+
+const ListType = addElementType("list", (value) => value instanceof List);
 
 // TODO: factor out 'or null'
 const ListOrNullType = addElementType("list_or_null",
-    (value) => value == null || Array.isArray(value));
+    (value) => value == null || value instanceof List);
 
 const FunctionType = addElementType("function", (value) => typeof value == "function");
 

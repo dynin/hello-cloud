@@ -44,7 +44,7 @@ function fetchLabels() {
         result.push(makeMockLabel());
       }
     }
-    setValue(mailData.labelsList, result)
+    setValue(mailData.labelsList, new List(result));
   }
 }
 
@@ -63,7 +63,7 @@ function fetchThreads() {
         result.push(makeMockThread());
       }
     }
-    setValue(mailData.threadsList, result)
+    setValue(mailData.threadsList, new List(result));
   }
 }
 

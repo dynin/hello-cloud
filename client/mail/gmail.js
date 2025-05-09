@@ -120,7 +120,7 @@ function fetchLabels() {
       'userId': 'me',
     }).then((response) => {
       if (getValue(mailData.syncStatus) == SyncStatus.ONLINE) {
-        setValue(mailData.labelsList, response.result.labels);
+        setValue(mailData.labelsList, new List(response.result.labels));
       }
     }, requestFailed);
   }
@@ -139,7 +139,7 @@ function fetchThreads() {
       if (getValue(mailData.syncStatus) == SyncStatus.ONLINE) {
         // {"id":"string","snippet":"text","historyId":"number"}
         // TODO: validate the results and handle HTML entities in snippets
-        setValue(mailData.threadsList, response.result.threads);
+        setValue(mailData.threadsList, new List(response.result.threads));
       }
     }, requestFailed);
   }

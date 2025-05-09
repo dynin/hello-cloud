@@ -108,15 +108,15 @@ class ConstructViewFormatter extends ConstructVisitor {
       if (oneliner) {
         views = views.concat(argumentViews);
       } else {
-        content.push(makeDivView(makeContainerViewFromList(argumentViews)));
+        content.push(makeDivView(makeContainerViewFromArray(argumentViews)));
       }
     }
     if (!oneliner) {
       views.push(makeVisibleView(
-          makeDivView(makeContainerViewFromList(content), Styles.Indent), expanded));
+          makeDivView(makeContainerViewFromArray(content), Styles.Indent), expanded));
     }
     views.push(makeTextView(")"));
-    return makeContainerViewFromList(views);
+    return makeContainerViewFromArray(views);
   }
 }
 

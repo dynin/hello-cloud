@@ -226,6 +226,7 @@ class ContainerView extends View {
 class ListView extends View {
   constructor(list, makeView, emptyView) {
     super();
+    ListOrNullType.check(getValue(list));
     this.list = list;
     this.makeView = makeView;
     this.emptyView = emptyView;
@@ -252,7 +253,7 @@ class ListView extends View {
       }
 
       const result = new DocumentFragment();
-      for (const element of listState) {
+      for (const element of listState.iterate()) {
         const rendered = listViewState.makeView(element).render(subSpan);
         result.appendChild(getValue(rendered));
         observe(rendered, subSpan, renderedList.recompute);
@@ -294,9 +295,9 @@ function makeContainerView() {
   return new ContainerView([...arguments]);
 }
 
-function makeContainerViewFromList(viewList) {
-  ListType.check(viewList);
-  return new ContainerView(viewList);
+function makeContainerViewFromArray(viewArray) {
+  ArrayType.check(viewArray);
+  return new ContainerView(viewArray);
 }
 
 function makeListView(list, makeView, emptyView) {

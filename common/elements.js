@@ -506,6 +506,46 @@ function panic(message) {
 }
 
 /**
+ * A wrapper around Array that supports observeration and is limited to a specific type.
+ */
+class List {
+  /**
+   * Create an instance of list from array of elements.
+   * TODO: pass element type.
+   */
+  constructor(elementsArray) {
+    ArrayType.check(elementsArray);
+    // TODO: check element types.
+    this.elements = elementsArray;
+  }
+
+  /**
+   * Get this list's size.
+   * TODO: return a Ref.
+   */
+  size() {
+    return this.elements.length;
+  }
+
+  /**
+   * Get the element of the list.
+   */
+  get(index) {
+    if (index >= this.elements.length) {
+      panic("Index out of bounds.")
+    }
+    return this.elements[index];
+  }
+
+  /**
+   * Return array of elements for iteration.
+   */
+  iterate() {
+    return this.elements;
+  }
+}
+
+/**
  * A Zone encapsulates execution context--for example, identifying an event loop.
  * It is possible to schedule observers or actions in a given zone.
  *
