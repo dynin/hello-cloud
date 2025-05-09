@@ -5,8 +5,17 @@
  * https://dynin.com/berkeley-license/
  */
 
+function isOnFilesystem() {
+  return window.location.href.toLowerCase().startsWith("file:");
+}
+
 class DatastoreSync {
   constructor(datastore, isActive) {
+    if (isOnFilesystem()) {
+      setValue(datastore.syncStatus, SyncStatus.ONLINE);
+      return;
+    }
+
     this.datastore = datastore;
     this.isActive = isActive;
     this.transport = new HttpTransport();

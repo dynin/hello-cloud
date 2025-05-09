@@ -7,7 +7,6 @@
 
 const counterText = ["elements:stringJoin",
   "s:The button was pressed ", "counter:state", "s: times."];
-  // stringJoin("The button was pressed ", counterData.state, " times.");
 const counterLabel = ["makeTextView", counterText, "styles:Message"];
 const contentView =
     ["makeContainerView",
@@ -21,10 +20,6 @@ const contentView =
             ["elements:notEqualsOp", "counter:syncStatus", "elements:NOT_INITIALIZED"]
         ]
     ];
-
-function isOnFilesystem() {
-  return window.location.href.toLowerCase().startsWith("file:");
-}
 
 function main() {
   const isViewSource = makeBoxed(false, BooleanType);
@@ -46,10 +41,6 @@ function main() {
   const rootView = makeContainerView(mainView, makeStatusView(counterData, viewSource));
   setRootView(rootView);
 
-  if (isOnFilesystem()) {
-    setValue(counterData.syncStatus, SyncStatus.ONLINE);
-  } else {
-    new DatastoreSync(counterData, notOp(isViewSource));
-    sync(counterData, Priority.NORMAL, ForeverLifespan.instance);
-  }
+  new DatastoreSync(counterData, notOp(isViewSource));
+  sync(counterData, Priority.NORMAL, ForeverLifespan.instance);
 }
