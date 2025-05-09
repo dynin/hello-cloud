@@ -18,6 +18,21 @@ const mailData = makeDatastore("mail", {
   fetchThreads: makeBoxed(notInitialized, FunctionType),
 });
 
+class Label {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+class Thread {
+  constructor(snippet) {
+    this.snippet = snippet;
+  }
+}
+
+const LabelType = addNamespaceType(mailData, "label", (value) => value instanceof Label);
+const ThreadType = addNamespaceType(mailData, "thread", (value) => value instanceof Thread);
+
 function main() {
   function renderMessage(message) {
     return makeTextView(message.snippet, Styles.Snippet);

@@ -511,12 +511,16 @@ function panic(message) {
 class List {
   /**
    * Create an instance of list from array of elements.
-   * TODO: pass element type.
    */
-  constructor(elementsArray) {
+  constructor(elementsArray, elementType) {
     ArrayType.check(elementsArray);
-    // TODO: check element types.
+    TypeType.check(elementType);
+    for (const element of elementsArray) {
+      elementType.check(element);
+    }
+
     this.elements = elementsArray;
+    this.elementType = elementType;
   }
 
   /**

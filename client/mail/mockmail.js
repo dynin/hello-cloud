@@ -32,7 +32,7 @@ function deauthenticate() {
 function makeMockLabel() {
   const randomInteger = Math.floor(Math.random() * 68) + 1;
   const labelName = "Label " + randomInteger;
-  return { name: labelName };
+  return new Label(labelName);
 }
 
 function fetchLabels() {
@@ -44,14 +44,14 @@ function fetchLabels() {
         result.push(makeMockLabel());
       }
     }
-    setValue(mailData.labelsList, new List(result));
+    setValue(mailData.labelsList, new List(result, LabelType));
   }
 }
 
 function makeMockThread() {
   const randomInteger = Math.floor(Math.random() * 68) + 1;
   const mockSnippet = "Snippet " + randomInteger;
-  return { snippet: mockSnippet };
+  return new Thread(mockSnippet);
 }
 
 function fetchThreads() {
@@ -63,7 +63,7 @@ function fetchThreads() {
         result.push(makeMockThread());
       }
     }
-    setValue(mailData.threadsList, new List(result));
+    setValue(mailData.threadsList, new List(result, ThreadType));
   }
 }
 

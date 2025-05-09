@@ -58,7 +58,8 @@ function parseExpression(expression, context) {
     }
   } else if (ArrayType.isInstance(expression)) {
     if (expression.length == 0) {
-      return new ConstantConstruct(new List([]), ListType);
+      // TODO: empty list should be a separate type.  Using String as element type for now.
+      return new ConstantConstruct(new List([], StringType), ListType);
     }
 
     const functionConstruct = parseExpression(expression[0], context);

@@ -120,7 +120,12 @@ function fetchLabels() {
       'userId': 'me',
     }).then((response) => {
       if (getValue(mailData.syncStatus) == SyncStatus.ONLINE) {
-        setValue(mailData.labelsList, new List(response.result.labels));
+        const result = [];
+        for (const label of response.result.labels) {
+          // {"name":"string"}
+          result.push(new Label(label.name));
+        }
+        setValue(mailData.labelsList, new List(result, LabelType));
       }
     }, requestFailed);
   }
@@ -137,9 +142,13 @@ function fetchThreads() {
       'maxResults': 20
     }).then((response) => {
       if (getValue(mailData.syncStatus) == SyncStatus.ONLINE) {
-        // {"id":"string","snippet":"text","historyId":"number"}
-        // TODO: validate the results and handle HTML entities in snippets
-        setValue(mailData.threadsList, new List(response.result.threads));
+        const result = [];
+        for (const thread of response.result.threads) {
+          // {"id":"string","snippet":"text","historyId":"number"}
+          // TODO: validate the results and handle HTML entities in snippets
+          result.push(new Thread(thread.snippet));
+        }
+        setValue(mailData.threadsList, new List(result, ThreadType));
       }
     }, requestFailed);
   }
